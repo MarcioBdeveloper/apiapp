@@ -34,15 +34,15 @@ public class UsuarioController {
 		usuarios.add(user);
 		
 		Usuario user2 = new Usuario();
-		user.setNome("Rousy");
-		user.setInstagran("@instaRousy");
-		user.setTipo(TipoUsuario.CIDADAO);
+		user2.setNome("Rousy");
+		user2.setInstagran("@instaRousy");
+		user2.setTipo(TipoUsuario.CIDADAO);
 		usuarios.add(user2);
 		
 		Usuario user3 = new Usuario();
-		user.setNome("Cagepa");
-		user.setInstagran("@instaCagepa");
-		user.setTipo(TipoUsuario.ORGAO);
+		user3.setNome("Cagepa");
+		user3.setInstagran("@instaCagepa");
+		user3.setTipo(TipoUsuario.ORGAO);
 		usuarios.add(user3);
 		
 		return usuarios;
