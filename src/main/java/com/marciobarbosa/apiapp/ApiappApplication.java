@@ -10,6 +10,13 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+/***
+ * 
+ * Created by Márcio Barbosa - email: marciobarbosamobile@gmail.com
+ * 01/06/2019
+ *
+ * */
+
 @EnableSwagger2
 @SpringBootApplication
 public class ApiappApplication {

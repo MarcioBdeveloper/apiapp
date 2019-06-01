@@ -10,30 +10,30 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.marciobarbosa.apiapp.entity.Usuario;
-import com.marciobarbosa.apiapp.service.UsuarioService;
+import com.marciobarbosa.apiapp.entity.Denuncia;
+import com.marciobarbosa.apiapp.service.DenunciaService;
+
 
 /***
  * 
  * Created by Márcio Barbosa - email: marciobarbosamobile@gmail.com
- * 26/05/2019
+ * 01/06/2019
  * */
 
 @RestController
 @CrossOrigin
-@RequestMapping("/usuario")
-public class UsuarioController {
-	
+@RequestMapping("/denuncia")
+public class DenunciaController {
+
 	@Autowired
-	private UsuarioService service;
+	private DenunciaService service;
+	
 	
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<Usuario> listaUsuarios(){
-		List<Usuario> usuarios = new ArrayList<>();
-		usuarios = this.service.findAll();
-		
-		return usuarios;
+	public List<Denuncia> listaDenuncias(){
+		List<Denuncia> denuncias = new ArrayList<>();
+		denuncias = this.service.findAll();
+		return denuncias;
 	}
-	
 	
 }
