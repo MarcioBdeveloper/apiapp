@@ -2,6 +2,7 @@ package com.marciobarbosa.apiapp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
 import springfox.documentation.builders.PathSelectors;
@@ -19,6 +20,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @EnableSwagger2
 @SpringBootApplication
+@EnableConfigurationProperties({FileStorageProperties.class})
 public class ApiappApplication {
 
 	public static void main(String[] args) {
