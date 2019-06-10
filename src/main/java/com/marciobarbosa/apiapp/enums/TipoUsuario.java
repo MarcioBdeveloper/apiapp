@@ -1,5 +1,7 @@
 package com.marciobarbosa.apiapp.enums;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /***
  * 
  * Created by Márcio Barbosa - email: marciobarbosamobile@gmail.com
@@ -7,26 +9,34 @@ package com.marciobarbosa.apiapp.enums;
  *
  * */
 
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum TipoUsuario {
 	
 	
-	C("C", "Cidadão"),
-	O("O", "Orgão resposável");
+	CIDADAO(1),
+	ORGAO(2);
 
-	TipoUsuario(String codigo, String descricao) {
+	TipoUsuario(int codigo) {
 		this.codigo = codigo;
-		this.descricao = descricao;
 	}
 	
-	private final String codigo;
-	private final String descricao;
+	private final int codigo;
 	
-	public String getCodigo() {
+	public int getCodigo() {
 		return this.codigo;
 	}
 	
-	public String getDescricao() {
-		return this.descricao;
+	
+	public static TipoUsuario getPorCodigo(String descricao) {
+		if(descricao != null) {
+			if(TipoUsuario.CIDADAO.name().equalsIgnoreCase(descricao)) {
+				return TipoUsuario.CIDADAO;
+			}
+			if(TipoUsuario.ORGAO.name().equalsIgnoreCase(descricao)) {
+				return TipoUsuario.ORGAO;
+			}
+		}
+		return null;
 	}
 
 }
