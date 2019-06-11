@@ -40,4 +40,8 @@ public class Imagens implements Serializable{
 		this.path = dto.getPath();
 	}
 	
+	public Imagens() {
+		super();
+	}
+	
 }
