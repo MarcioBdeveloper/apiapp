@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.marciobarbosa.apiapp.dto.DenunciaDTO;
-import com.marciobarbosa.apiapp.entity.Denuncia;
 import com.marciobarbosa.apiapp.service.DenunciaService;
+import com.marciobarbosa.apiapp.service.ReportService;
+
+import net.sf.jasperreports.engine.JRException;
 
 
 /***
@@ -30,6 +32,8 @@ public class DenunciaController {
 
 	@Autowired
 	private DenunciaService service;
+	@Autowired
+	private ReportService reportService;
 	
 	
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -52,6 +56,15 @@ public class DenunciaController {
 	@RequestMapping(value = "/deletar", method = RequestMethod.DELETE)
 	public void deletar(@RequestParam Long id) {
 		this.service.delete(id);
+	}
+	
+	@RequestMapping(value = "/relatorio", method = RequestMethod.GET)
+	public void realtorioJasper(){
+		try {
+			this.reportService.montarRelatorio();
+		} catch (JRException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	
