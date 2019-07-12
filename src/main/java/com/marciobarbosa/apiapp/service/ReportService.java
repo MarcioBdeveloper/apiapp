@@ -45,30 +45,41 @@ import net.sf.jasperreports.engine.xml.JRXmlLoader;
 public class ReportService {
 	
     private static final String TEMPLETE = "\\fluxo-caixa-detalhado-gerencial.jrxml";
-	private static final String REALIZADO2 = "REALIZADO";
-	private static final String PROJETADO2 = "Projetado";
-	private static final String REALIZADO = "Realizado";
+	private static final String REALIZADO = "REALIZADO";
 	private static final String RESUMO = "RESUMO";
 	private static final String PROJETADO = "PROJETADO";
 	private static final String TODOS = "TODOS";
-	private final static int COLUMN_HEADER_HEIGHT = 40;
-    private final static String SANS_SERIF_FONT = "SansSerif";
+    private static final String SANS_SERIF_FONT = "SansSerif";
+    
 	private JasperDesign relatorioPrincipal;
-	private JRDesignBand columnHeader;
-	private JRDesignRectangle colunasCard;
-	private JRDesignRectangle colunasResumoCard;
-	private JasperDesign columnHeaderTemplete;
+	private JRDesignBand pageHeader;
+	private static final Color colorBackGround = new Color(199,199,199);
+	private static final Color colorSaldoFinal = new Color(222,222,222);
+	private static final Color colorWhite = new Color(255,255,255);
 	
 	//cards
 	private int widthColumn;
-	private int xInitialHeader;
 	private int widthColumnResumo;
-	private int xInitialHeaderResumo;
+	private static final int widthCardDatas = 500;
+	private static final int widthCardResumo = 121;
+	private static final int xInitCardDatas = 181;
+	private static final int yInitCardDatas = 0;
+	private static final int xInitCardResumo = 681;
+	private static final int yIntitCardResumo = 0;
+	private static final int heightCards = 30;
+
 	
-	private final static int yDefaultElementoColumn1 = 0;
-	private final static int yDefaultElementoColumn2 = 15;
+	//Detail
+	private static final int widthDetail = 802;
+	private static final int heightRetangleDetail = 15;
+	private static final int xInitDetail = 0;
+	private static final int yInitDetail = 30;
+	
+	private static final int yDefaultElementoColumn1 = 0;
+	private static final int yDefaultElementoColumn2 = 15;
 	
 	private String tipo;
+	private List<ColunmAgrupamentoRelDTO> dadosRel;
     
 	@Autowired
     private ContextualizedJasperFileResolver fileResolver;
@@ -79,10 +90,10 @@ public class ReportService {
 	public void montarRelatorio() throws JRException {
 		
 		Map<String, JasperReport> subreports = new HashMap<>();
-    	
+    	this.dadosRel = montarDados();
 		//TODO ajustar para passar a quantidade de colunas de acordo com o filtro
     	JasperReportBuilderSnapshot resultado = jasperBuilder.forReport(
-    			JasperCompileManager.compileReport(montarReport(2, TODOS)))
+    			JasperCompileManager.compileReport(montarReport(this.dadosRel, TODOS)))
     			.withParameter("mesInicio", LocalDate.now().toString())
     			.withParameter("mesFim", LocalDate.now().toString())
     			.fill(montarDados()).snapshot();
@@ -94,62 +105,53 @@ public class ReportService {
 		}
 	}
 	
-	private JasperDesign montarReport(int qtdCol, String tipo) throws JRException {
+	private JasperDesign montarReport(List<ColunmAgrupamentoRelDTO> dados, String tipo) throws JRException {
 		
 		this.tipo = tipo;
+		int qtdCol = dados.size();
 		
 		this.relatorioPrincipal = JRXmlLoader.load(fileResolver.resolveFile(TEMPLETE));
-    	this.columnHeader = (JRDesignBand) this.relatorioPrincipal.getColumnHeader();
-    	this.colunasCard = (JRDesignRectangle) this.columnHeader.getElementByKey("colunasCard");
-    	this.colunasResumoCard = (JRDesignRectangle) this.columnHeader.getElementByKey("colunasResumoCard");
+    	this.pageHeader = (JRDesignBand) this.relatorioPrincipal.getPageHeader();
+    	
     	
     	//divide o tamanho do card pela quantidade de colunas
-    	this.widthColumn = this.colunasCard.getWidth()/qtdCol;
-    	//pega a posição inicial do card
-    	this.xInitialHeader = this.colunasCard.getX();
+    	this.widthColumn = widthCardDatas/qtdCol;
     	
     	//divide o tamanho do card de resumo de acordo com os tipos
     	if(this.tipo.equals(TODOS)) {
-    		this.widthColumnResumo = this.colunasResumoCard.getWidth()/2;    		
+    		this.widthColumnResumo = widthCardResumo/2;    		
     	}else {
-    		this.widthColumnResumo = this.colunasResumoCard.getWidth();
+    		this.widthColumnResumo = widthCardResumo;
     	}
-    	//pega a posição inicial do card de resumo
-    	this.xInitialHeaderResumo = this.colunasResumoCard.getX();
     	
-    	columnCard(qtdCol);
+    	columnCard();
     	columnCardResumo();
+    	montarDetail(dados);
     	
     	return relatorioPrincipal;
 	}
 	
 	//Monta e configura as colunas de datas
-	private void columnCard(int qtdCol) throws JRException{
+	private void columnCard() throws JRException{
 		
-		int xUltimoAdd = this.xInitialHeader;
+		JRDesignRectangle retReceitaInitLiq = new JRDesignRectangle();
+		retReceitaInitLiq.setY(yInitCardDatas);
+		retReceitaInitLiq.setX(xInitCardDatas);
+		retReceitaInitLiq.setWidth(widthCardDatas);
+		retReceitaInitLiq.setHeight(heightCards);
+		retReceitaInitLiq.setBackcolor(colorBackGround);
+		this.pageHeader.addElement(retReceitaInitLiq);
+		
+		int xUltimoAdd = xInitCardDatas;
 		JRDesignStaticText elemento = null;
-		for(int count = 1; count <= qtdCol; count++) {
-			if(this.tipo.equals(TODOS)) {
-				this.columnHeader.addElement(montarColunaData(xUltimoAdd, yDefaultElementoColumn1, this.widthColumn, PROJETADO));
-				this.columnHeader.addElement(montarColunaData(xUltimoAdd, yDefaultElementoColumn2, this.widthColumn, "10/07/2019"));
-				this.columnHeader.addElement(montarColunaData((xUltimoAdd+this.widthColumn), yDefaultElementoColumn1, this.widthColumn, REALIZADO2));
-				elemento = montarColunaData((xUltimoAdd+this.widthColumn), yDefaultElementoColumn2, this.widthColumn, "10/07/2019");
-				this.columnHeader.addElement(elemento);
-				xUltimoAdd = elemento.getX()+this.widthColumn;
-			}else if(this.tipo.equals(PROJETADO)) {
-				elemento = montarColunaData(xUltimoAdd, yDefaultElementoColumn1, this.widthColumn, PROJETADO);
-				this.columnHeader.addElement(elemento);
-				this.columnHeader.addElement(montarColunaData(xUltimoAdd, yDefaultElementoColumn2, this.widthColumn, "10/07/2019"));
-				xUltimoAdd = elemento.getX()+this.widthColumn;
-			}else {
-				elemento = montarColunaData(xUltimoAdd, yDefaultElementoColumn1, this.widthColumn, REALIZADO2);
-				this.columnHeader.addElement(elemento);
-				this.columnHeader.addElement(montarColunaData(xUltimoAdd, yDefaultElementoColumn2, this.widthColumn, "10/07/2019"));
-				xUltimoAdd = elemento.getX()+this.widthColumn;
-			}
+		for(ColunmAgrupamentoRelDTO dto : this.dadosRel) {
+			this.pageHeader.addElement(montarColunaData(xUltimoAdd, yDefaultElementoColumn1, this.widthColumn, dto.getData()));
+			elemento = montarColunaData(xUltimoAdd, yDefaultElementoColumn2, this.widthColumn, dto.getTipo());
+			this.pageHeader.addElement(elemento);
+			xUltimoAdd = elemento.getX()+this.widthColumn;
 		}
 		
-		this.relatorioPrincipal.setColumnHeader(this.columnHeader);
+		this.relatorioPrincipal.setPageHeader(this.pageHeader);
 	}
 	
 	private JRDesignStaticText montarColunaData(int x, int y, int width, String data) {
@@ -162,7 +164,7 @@ public class ReportService {
 		columnData.setBorderWidth(0.19f);
 		columnData.setY(y);
 		columnData.setX(x);
-		columnData.setTextHorizontallAlign(HorizontalTextAlignEnum.CENTER);
+		columnData.setTextHorizontallAlign(HorizontalTextAlignEnum.RIGHT);
 		columnData.setVerticalTextAlignEnum(VerticalTextAlignEnum.MIDDLE);
 		columnData.setText(data);
 		return borderedStaticText(columnData);
@@ -172,20 +174,29 @@ public class ReportService {
 	//Monta e configura as colunas de resumo
 	private void columnCardResumo() throws JRException{
 		
+		JRDesignRectangle retReceitaInitLiq = new JRDesignRectangle();
+		retReceitaInitLiq.setY(yIntitCardResumo);
+		retReceitaInitLiq.setX(xInitCardResumo);
+		retReceitaInitLiq.setWidth(widthCardResumo);
+		retReceitaInitLiq.setHeight(heightCards);
+		retReceitaInitLiq.setBackcolor(colorBackGround);
+		this.pageHeader.addElement(retReceitaInitLiq);
+		
+		
 		if (this.tipo.equals(TODOS)) {
-			this.columnHeader.addElement(montarColunaData(this.xInitialHeaderResumo, yDefaultElementoColumn1, this.widthColumnResumo,  RESUMO));
-			this.columnHeader.addElement(montarColunaData(this.xInitialHeaderResumo, yDefaultElementoColumn2, this.widthColumnResumo, PROJETADO2));
-			this.columnHeader.addElement(montarColunaData((this.xInitialHeaderResumo + this.widthColumnResumo), yDefaultElementoColumn1, this.widthColumnResumo, RESUMO));
-			this.columnHeader.addElement(montarColunaData((this.xInitialHeaderResumo + this.widthColumnResumo), yDefaultElementoColumn2, this.widthColumnResumo, REALIZADO));
+			this.pageHeader.addElement(montarColunaData(xInitCardResumo, yDefaultElementoColumn1, this.widthColumnResumo,  RESUMO));
+			this.pageHeader.addElement(montarColunaData(xInitCardResumo, yDefaultElementoColumn2, this.widthColumnResumo, PROJETADO));
+			this.pageHeader.addElement(montarColunaData((xInitCardResumo + this.widthColumnResumo), yDefaultElementoColumn1, this.widthColumnResumo, RESUMO));
+			this.pageHeader.addElement(montarColunaData((xInitCardResumo + this.widthColumnResumo), yDefaultElementoColumn2, this.widthColumnResumo, REALIZADO));
 		} else if (this.tipo.equals(PROJETADO)) {
-			this.columnHeader.addElement(montarColunaData(this.xInitialHeaderResumo, yDefaultElementoColumn1, this.widthColumnResumo, RESUMO));
-			this.columnHeader.addElement(montarColunaData(this.xInitialHeaderResumo, yDefaultElementoColumn2, this.widthColumnResumo, PROJETADO2));
+			this.pageHeader.addElement(montarColunaData(xInitCardResumo, yDefaultElementoColumn1, this.widthColumnResumo, RESUMO));
+			this.pageHeader.addElement(montarColunaData(xInitCardResumo, yDefaultElementoColumn2, this.widthColumnResumo, PROJETADO));
 		} else {
-			this.columnHeader.addElement(montarColunaData(this.xInitialHeaderResumo, yDefaultElementoColumn1, this.widthColumnResumo, RESUMO));
-			this.columnHeader.addElement(montarColunaData(this.xInitialHeaderResumo, yDefaultElementoColumn2, this.widthColumnResumo, REALIZADO));
+			this.pageHeader.addElement(montarColunaData(xInitCardResumo, yDefaultElementoColumn1, this.widthColumnResumo, RESUMO));
+			this.pageHeader.addElement(montarColunaData(xInitCardResumo, yDefaultElementoColumn2, this.widthColumnResumo, REALIZADO));
 		}
 
-		this.relatorioPrincipal.setColumnHeader(this.columnHeader);
+		this.relatorioPrincipal.setPageHeader(this.pageHeader);
 	}
 	 
 	
@@ -214,10 +225,95 @@ public class ReportService {
 	}
 	//termina a configuração dos fields
 	
+	
+	//monta e configura detail Receita Liquida
+	private void montarDetail(List<ColunmAgrupamentoRelDTO> dto) {
+	
+		this.pageHeader.addElement(montarRetangulo(yInitDetail, xInitDetail, colorBackGround));
+		int yUltimoAdd = yInitDetail;
+		
+		for(ColunmAgrupamentoRelDTO dados : dto) {
+			for(ReceitaLiquidaRelDTO dadosReceitaLiq: dados.getReceitasLiqInicial()) {
+				this.pageHeader.addElement(montarColunaDescricao(xInitDetail, yUltimoAdd, dadosReceitaLiq.getNome()));
+				yUltimoAdd += 15;
+				
+				for(ReceitaDespesaMuniRelDTO recMunicipio : dadosReceitaLiq.getReceitasMunicipio()) {
+					
+					this.pageHeader.addElement(montarRetangulo(yUltimoAdd, xInitDetail, colorBackGround));
+					this.pageHeader.addElement(montarColunaDescricao(xInitDetail, yUltimoAdd, recMunicipio.getNome()));
+					yUltimoAdd += 15;
+					
+					for(GrupoRelDTO grupo : recMunicipio.getGrupos()) {
+						
+						JRDesignStaticText elementoGrupo = montarColunaDescricao(xInitDetail, yUltimoAdd, grupo.getNome());
+						elementoGrupo.setBackcolor(colorWhite);
+						elementoGrupo.setX(xInitDetail+20);
+						this.pageHeader.addElement(elementoGrupo);
+						yUltimoAdd += 15;
+						
+						for(SubGrupoRelDTO subGrupo : grupo.getSubgrupos()) {
+							
+							JRDesignStaticText elementoSub = montarColunaDescricao(xInitDetail, yUltimoAdd, subGrupo.getNome());
+							elementoSub.setBackcolor(colorWhite);
+							elementoSub.setX(xInitDetail+30);
+							this.pageHeader.addElement(elementoSub);
+							yUltimoAdd += 15;
+							
+						}
+					}
+				}
+			}
+		}
+		
+		this.relatorioPrincipal.setPageHeader(this.pageHeader);
+		
+	} 
+	
+	private JRDesignRectangle montarRetangulo(int y, int x, Color color) {
+		JRDesignRectangle retReceitaInitLiq = new JRDesignRectangle();
+		retReceitaInitLiq.setY(y);
+		retReceitaInitLiq.setX(x);
+		retReceitaInitLiq.setWidth(widthDetail);
+		retReceitaInitLiq.setHeight(heightRetangleDetail);
+		retReceitaInitLiq.setBackcolor(color);
+		return retReceitaInitLiq;
+	}
+	
+	private JRDesignStaticText montarColunaDescricao(int x, int y, String descricao) {
+		JRElementConfig columnData = new JRElementConfig();
+		columnData.setWidth(widthDetail);
+		columnData.setHeight(15);
+		columnData.setBold(true);
+		columnData.setFontName(SANS_SERIF_FONT);
+		columnData.setFontSize(8.0f);
+		columnData.setBorderWidth(0.19f);
+		columnData.setY(y);
+		columnData.setX(x);
+		columnData.setTextHorizontallAlign(HorizontalTextAlignEnum.LEFT);
+		columnData.setVerticalTextAlignEnum(VerticalTextAlignEnum.MIDDLE);
+		columnData.setText(descricao);
+		return borderedStaticText(columnData);
+	}
+	
+	//termina a configuração da Receita Liquida
+	
 	private List<ColunmAgrupamentoRelDTO> montarDados() {
 		ColunmAgrupamentoRelDTO dto = new ColunmAgrupamentoRelDTO();
+		ColunmAgrupamentoRelDTO dto2 = new ColunmAgrupamentoRelDTO();
+		ColunmAgrupamentoRelDTO dto3 = new ColunmAgrupamentoRelDTO();
+		ColunmAgrupamentoRelDTO dto4 = new ColunmAgrupamentoRelDTO();
+		
 		dto.setData(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-		dto.setTipo(PROJETADO2);
+		dto.setTipo(PROJETADO);
+		
+		dto2.setData(LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		dto2.setTipo(REALIZADO);
+		
+		dto3.setData(LocalDate.now().plusDays(2).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		dto3.setTipo(PROJETADO);
+		
+		dto4.setData(LocalDate.now().plusDays(3).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		dto4.setTipo(REALIZADO);
 		
 		//Receita
 		ReceitaLiquidaRelDTO receitaLiqDto = new ReceitaLiquidaRelDTO();
@@ -256,7 +352,16 @@ public class ReportService {
 		dto.setReceitasLiqInicial(Arrays.asList(receitaLiqDto));
 		dto.setReceitasLiqFinal(Arrays.asList(receitaLiqDto));
 		
-		return Arrays.asList(dto);
+		dto2.setReceitasLiqInicial(Arrays.asList(receitaLiqDto));
+		dto2.setReceitasLiqFinal(Arrays.asList(receitaLiqDto));
+		
+		dto3.setReceitasLiqInicial(Arrays.asList(receitaLiqDto));
+		dto3.setReceitasLiqFinal(Arrays.asList(receitaLiqDto));
+		
+		dto4.setReceitasLiqInicial(Arrays.asList(receitaLiqDto));
+		dto4.setReceitasLiqFinal(Arrays.asList(receitaLiqDto));
+		
+		return Arrays.asList(dto, dto2, dto3);
 	}
 	
 

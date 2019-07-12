@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2019-07-10T14:38:46 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="fluxo-caixa-detalhado-gerencial" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="BlankPage" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="98d82a10-88a4-45d9-97ca-88d2a86d2bae">
+<!-- 2019-07-12T18:12:24 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="fluxo-caixa-detalhado-gerencial" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="BlankPage" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="98d82a10-88a4-45d9-97ca-88d2a86d2bae">
 	<property name="ireport.zoom" value="1.4641000000000006"/>
 	<property name="ireport.x" value="186"/>
 	<property name="ireport.y" value="115"/>
@@ -107,7 +107,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="180" splitType="Stretch">
+		<band height="90" splitType="Stretch">
 			<staticText>
 				<reportElement x="34" y="15" width="486" height="15" uuid="7c8fa1a0-45d0-4068-97d1-424030632bf2">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
@@ -139,42 +139,25 @@
 				<text><![CDATA[PREFEITURA MUNICIPAL DE MANAUS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="580" y="91" width="44" height="15" uuid="90db452a-fb11-40ad-a425-e69df33b550a"/>
+				<reportElement x="576" y="50" width="44" height="15" uuid="90db452a-fb11-40ad-a425-e69df33b550a"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Período:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="624" y="91" width="178" height="15" uuid="0a72cb6e-0d83-40a3-bdb1-11241e72a46b">
+				<reportElement x="620" y="50" width="178" height="15" uuid="0a72cb6e-0d83-40a3-bdb1-11241e72a46b">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$P{mesInicio} +" a "+ $P{mesFim}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
-	<columnHeader>
-		<band height="30">
+	<pageHeader>
+		<band height="435">
 			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-			<rectangle>
-				<reportElement key="colunasCard" x="181" y="0" width="500" height="30" backcolor="#C7C7C7" uuid="b693d540-c826-4e5e-b576-8709051b8cab">
-					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-				</reportElement>
-				<graphicElement>
-					<pen lineWidth="0.0"/>
-				</graphicElement>
-			</rectangle>
-			<rectangle>
-				<reportElement key="colunasResumoCard" x="681" y="0" width="121" height="30" backcolor="#C7C7C7" uuid="9d784299-8e76-4564-b27a-323037e3b429">
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-				</reportElement>
-				<graphicElement>
-					<pen lineWidth="0.0"/>
-				</graphicElement>
-			</rectangle>
 		</band>
-	</columnHeader>
+	</pageHeader>
 	<pageFooter>
 		<band height="29" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
