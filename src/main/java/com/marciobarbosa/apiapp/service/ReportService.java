@@ -78,6 +78,9 @@ public class ReportService {
 	private static final int yDefaultElementoColumn1 = 0;
 	private static final int yDefaultElementoColumn2 = 15;
 	
+	private static final int leftIdentGrupo = 25;
+	private static final int leftIdentSubGrupo = 35;
+	
 	private String tipo;
 	private List<ColunmAgrupamentoRelDTO> dadosRel;
     
@@ -160,13 +163,14 @@ public class ReportService {
 		columnData.setHeight(15);
 		columnData.setBold(true);
 		columnData.setFontName(SANS_SERIF_FONT);
-		columnData.setFontSize(8.0f);
+		columnData.setFontSize(7.0f);
 		columnData.setBorderWidth(0.19f);
 		columnData.setY(y);
 		columnData.setX(x);
 		columnData.setTextHorizontallAlign(HorizontalTextAlignEnum.RIGHT);
 		columnData.setVerticalTextAlignEnum(VerticalTextAlignEnum.MIDDLE);
 		columnData.setText(data);
+		columnData.setRightIdent(5);
 		return borderedStaticText(columnData);
 	}
 	//ternima a configuração das colunas de datas
@@ -233,34 +237,114 @@ public class ReportService {
 		int yUltimoAdd = yInitDetail;
 		
 		for(ColunmAgrupamentoRelDTO dados : dto) {
-			for(ReceitaLiquidaRelDTO dadosReceitaLiq: dados.getReceitasLiqInicial()) {
-				this.pageHeader.addElement(montarColunaDescricao(xInitDetail, yUltimoAdd, dadosReceitaLiq.getNome()));
+			
+			//Receita Liquida inicial - não Vinculada
+			ReceitaLiquidaRelDTO dadosReceitaLiq = dados.getReceitasLiqFinalNvinculada();
+			this.pageHeader.addElement(montarColunaDescricao(xInitDetail, yUltimoAdd, dadosReceitaLiq.getNome()));
+			yUltimoAdd += 15;
+			
+			//Receitas Municipio	
+			ReceitaDespesaMuniRelDTO recMunicipio = dadosReceitaLiq.getReceitasMunicipio();
+					
+			this.pageHeader.addElement(montarRetangulo(yUltimoAdd, xInitDetail, colorBackGround));
+			this.pageHeader.addElement(montarColunaDescricao(xInitDetail, yUltimoAdd, recMunicipio.getNome()));
+			yUltimoAdd += 15;
+					
+			for(GrupoRelDTO grupo : recMunicipio.getGrupos()) {
+						
+				JRDesignStaticText elementoGrupo = montarColunaDescricaoGrupo(xInitDetail, yUltimoAdd, grupo.getNome(), leftIdentGrupo);
+				elementoGrupo.setBackcolor(colorWhite);
+				this.pageHeader.addElement(elementoGrupo);
 				yUltimoAdd += 15;
-				
-				for(ReceitaDespesaMuniRelDTO recMunicipio : dadosReceitaLiq.getReceitasMunicipio()) {
-					
-					this.pageHeader.addElement(montarRetangulo(yUltimoAdd, xInitDetail, colorBackGround));
-					this.pageHeader.addElement(montarColunaDescricao(xInitDetail, yUltimoAdd, recMunicipio.getNome()));
+						
+				for(SubGrupoRelDTO subGrupo : grupo.getSubgrupos()) {
+							
+					JRDesignStaticText elementoSub = montarColunaDescricaoGrupo(xInitDetail, yUltimoAdd, subGrupo.getNome(),leftIdentSubGrupo);
+					elementoSub.setBackcolor(colorWhite);
+					elementoSub.setFontSize(6.0f);
+					this.pageHeader.addElement(elementoSub);
 					yUltimoAdd += 15;
+							
+				}
+			}
+			
+			//Despesas municipio
+			ReceitaDespesaMuniRelDTO despMunicipio = dadosReceitaLiq.getDespesasMunicipio();
+			this.pageHeader.addElement(montarRetangulo(yUltimoAdd, xInitDetail, colorBackGround));
+			this.pageHeader.addElement(montarColunaDescricao(xInitDetail, yUltimoAdd, despMunicipio.getNome()));
+			yUltimoAdd += 15;
+			
+			
+			for(GrupoRelDTO grupo : despMunicipio.getGrupos()) {
+						
+				JRDesignStaticText elementoGrupo = montarColunaDescricaoGrupo(xInitDetail, yUltimoAdd, grupo.getNome(), leftIdentGrupo);
+				elementoGrupo.setBackcolor(colorWhite);
+				this.pageHeader.addElement(elementoGrupo);
+				yUltimoAdd += 15;
+						
+				for(SubGrupoRelDTO subGrupo : grupo.getSubgrupos()) {
+							
+					JRDesignStaticText elementoSub = montarColunaDescricaoGrupo(xInitDetail, yUltimoAdd, subGrupo.getNome(), leftIdentSubGrupo);
+					elementoSub.setBackcolor(colorWhite);
+					elementoSub.setFontSize(6.0f);
+					this.pageHeader.addElement(elementoSub);
+					yUltimoAdd += 15;
+							
+				}
+			}
+			
+			
+			//Receita Liquida inicial - Vinculada
+			ReceitaLiquidaRelDTO dadosReeitaVinculada = dados.getReceitasLiqInicialVinculada();
+			this.pageHeader.addElement(montarRetangulo(yUltimoAdd, xInitDetail, colorBackGround));
+			this.pageHeader.addElement(montarColunaDescricao(xInitDetail, yUltimoAdd, dadosReeitaVinculada.getNome()));
+			yUltimoAdd += 15;
+			
+			//Receitas municipio
+			ReceitaDespesaMuniRelDTO recMunicipioVinc = dadosReeitaVinculada.getReceitasMunicipio();
+			
+			this.pageHeader.addElement(montarRetangulo(yUltimoAdd, xInitDetail, colorBackGround));
+			this.pageHeader.addElement(montarColunaDescricao(xInitDetail, yUltimoAdd, recMunicipioVinc.getNome()));
+			yUltimoAdd += 15;
 					
-					for(GrupoRelDTO grupo : recMunicipio.getGrupos()) {
+			for(GrupoRelDTO grupoVinc : recMunicipioVinc.getGrupos()) {
 						
-						JRDesignStaticText elementoGrupo = montarColunaDescricao(xInitDetail, yUltimoAdd, grupo.getNome());
-						elementoGrupo.setBackcolor(colorWhite);
-						elementoGrupo.setX(xInitDetail+20);
-						this.pageHeader.addElement(elementoGrupo);
-						yUltimoAdd += 15;
+				JRDesignStaticText elementoGrupo = montarColunaDescricaoGrupo(xInitDetail, yUltimoAdd, grupoVinc.getNome(), leftIdentGrupo);
+				elementoGrupo.setBackcolor(colorWhite);
+				this.pageHeader.addElement(elementoGrupo);
+				yUltimoAdd += 15;
 						
-						for(SubGrupoRelDTO subGrupo : grupo.getSubgrupos()) {
+				for(SubGrupoRelDTO subGrupoVinc : grupoVinc.getSubgrupos()) {
 							
-							JRDesignStaticText elementoSub = montarColunaDescricao(xInitDetail, yUltimoAdd, subGrupo.getNome());
-							elementoSub.setBackcolor(colorWhite);
-							elementoSub.setX(xInitDetail+30);
-							this.pageHeader.addElement(elementoSub);
-							yUltimoAdd += 15;
+					JRDesignStaticText elementoSub = montarColunaDescricaoGrupo(xInitDetail, yUltimoAdd, subGrupoVinc.getNome(), leftIdentSubGrupo);
+					elementoSub.setBackcolor(colorWhite);
+					elementoSub.setFontSize(6.0f);
+					this.pageHeader.addElement(elementoSub);
+					yUltimoAdd += 15;
 							
-						}
-					}
+				}
+			}
+			
+			//Despesas municipio
+			ReceitaDespesaMuniRelDTO despMunicipioVinc = dadosReeitaVinculada.getDespesasMunicipio();
+			this.pageHeader.addElement(montarRetangulo(yUltimoAdd, xInitDetail, colorBackGround));
+			this.pageHeader.addElement(montarColunaDescricao(xInitDetail, yUltimoAdd, despMunicipioVinc.getNome()));
+			yUltimoAdd += 15;
+			
+			for(GrupoRelDTO grupoVinc : despMunicipioVinc.getGrupos()) {
+				
+				JRDesignStaticText elementoGrupo = montarColunaDescricaoGrupo(xInitDetail, yUltimoAdd, grupoVinc.getNome(), leftIdentGrupo);
+				elementoGrupo.setBackcolor(colorWhite);
+				this.pageHeader.addElement(elementoGrupo);
+				yUltimoAdd += 15;
+						
+				for(SubGrupoRelDTO subGrupoVinc : grupoVinc.getSubgrupos()) {
+							
+					JRDesignStaticText elementoSub = montarColunaDescricaoGrupo(xInitDetail, yUltimoAdd, subGrupoVinc.getNome(), leftIdentSubGrupo);
+					elementoSub.setBackcolor(colorWhite);
+					this.pageHeader.addElement(elementoSub);
+					yUltimoAdd += 15;
+							
 				}
 			}
 		}
@@ -281,17 +365,35 @@ public class ReportService {
 	
 	private JRDesignStaticText montarColunaDescricao(int x, int y, String descricao) {
 		JRElementConfig columnData = new JRElementConfig();
-		columnData.setWidth(widthDetail);
+		columnData.setWidth(xInitCardDatas);
 		columnData.setHeight(15);
 		columnData.setBold(true);
 		columnData.setFontName(SANS_SERIF_FONT);
-		columnData.setFontSize(8.0f);
+		columnData.setFontSize(7.0f);
 		columnData.setBorderWidth(0.19f);
 		columnData.setY(y);
 		columnData.setX(x);
 		columnData.setTextHorizontallAlign(HorizontalTextAlignEnum.LEFT);
 		columnData.setVerticalTextAlignEnum(VerticalTextAlignEnum.MIDDLE);
 		columnData.setText(descricao);
+		columnData.setLeftIdent(5);
+		return borderedStaticText(columnData);
+	}
+	
+	private JRDesignStaticText montarColunaDescricaoGrupo(int x, int y, String descricao, int leftIdent) {
+		JRElementConfig columnData = new JRElementConfig();
+		columnData.setWidth(xInitCardDatas);
+		columnData.setHeight(15);
+		columnData.setBold(false);
+		columnData.setFontName(SANS_SERIF_FONT);
+		columnData.setFontSize(6.0f);
+		columnData.setBorderWidth(0.19f);
+		columnData.setY(y);
+		columnData.setX(x);
+		columnData.setTextHorizontallAlign(HorizontalTextAlignEnum.LEFT);
+		columnData.setVerticalTextAlignEnum(VerticalTextAlignEnum.MIDDLE);
+		columnData.setText(descricao);
+		columnData.setLeftIdent(leftIdent);
 		return borderedStaticText(columnData);
 	}
 	
@@ -299,69 +401,56 @@ public class ReportService {
 	
 	private List<ColunmAgrupamentoRelDTO> montarDados() {
 		ColunmAgrupamentoRelDTO dto = new ColunmAgrupamentoRelDTO();
-		ColunmAgrupamentoRelDTO dto2 = new ColunmAgrupamentoRelDTO();
-		ColunmAgrupamentoRelDTO dto3 = new ColunmAgrupamentoRelDTO();
-		ColunmAgrupamentoRelDTO dto4 = new ColunmAgrupamentoRelDTO();
 		
 		dto.setData(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		dto.setTipo(PROJETADO);
 		
-		dto2.setData(LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-		dto2.setTipo(REALIZADO);
-		
-		dto3.setData(LocalDate.now().plusDays(2).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-		dto3.setTipo(PROJETADO);
-		
-		dto4.setData(LocalDate.now().plusDays(3).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-		dto4.setTipo(REALIZADO);
 		
 		//Receita
-		ReceitaLiquidaRelDTO receitaLiqDto = new ReceitaLiquidaRelDTO();
-		receitaLiqDto.setNome("RECEITA LÍQUIDA INICIAL - NÃO VINCULADO");
+		ReceitaLiquidaRelDTO receitaLiqNvinvuladoDto = new ReceitaLiquidaRelDTO();
+		receitaLiqNvinvuladoDto.setNome("RECEITA LÍQUIDA INICIAL - NÃO VINCULADO");
+		
+		ReceitaLiquidaRelDTO receitaLiqVinculadoDto = new ReceitaLiquidaRelDTO();
+		receitaLiqVinculadoDto.setNome("RECEITA LÍQUIDA INICIAL VINCULADO");
 		
 		ReceitaDespesaMuniRelDTO receita = new ReceitaDespesaMuniRelDTO();
 		receita.setNome("RECEITAS DO MUNICÍPIO");
 		
 		GrupoRelDTO grupo = new GrupoRelDTO();
 		grupo.setNome("RECEITA PRÓPRIA");
-		GrupoRelDTO grupo2 = new GrupoRelDTO();
-		grupo2.setNome("RECEITA PRÓPRIA");
+//		GrupoRelDTO grupo2 = new GrupoRelDTO();
+//		grupo2.setNome("TRANSFERENCIA DA UNIÃO");
 		
 		SubGrupoRelDTO subGrupo = new SubGrupoRelDTO();
 		subGrupo.setNome("IPTU");
 		subGrupo.setValores(Arrays.asList(BigDecimal.TEN));
-		SubGrupoRelDTO subGrupo2 = new SubGrupoRelDTO();
-		subGrupo2.setNome("IPTU");
-		subGrupo2.setValores(Arrays.asList(BigDecimal.ONE));
+//		SubGrupoRelDTO subGrupo2 = new SubGrupoRelDTO();
+//		subGrupo2.setNome("CONTAS PUBLICAS (ÁGUA/FONTE/ENERGIA)");
+//		subGrupo2.setValores(Arrays.asList(BigDecimal.ONE));
 		
-		grupo.setSubgrupos(Arrays.asList(subGrupo,subGrupo2));
+		grupo.setSubgrupos(Arrays.asList(subGrupo));
 		grupo.setTotalizadores(Arrays.asList(new BigDecimal(3)));
-		grupo2.setSubgrupos(Arrays.asList(subGrupo,subGrupo2));
-		grupo2.setTotalizadores(Arrays.asList(new BigDecimal(3)));
+//		grupo2.setSubgrupos(Arrays.asList(subGrupo,subGrupo2));
+//		grupo2.setTotalizadores(Arrays.asList(new BigDecimal(3)));
 		
-		receita.setGrupos(Arrays.asList(grupo, grupo2));
+		receita.setGrupos(Arrays.asList(grupo));
 		
 		//Despesa
 		ReceitaDespesaMuniRelDTO despesa = new ReceitaDespesaMuniRelDTO();
 		despesa.setNome("DESPESAS DO MUNICÍPIO");
-		despesa.setGrupos(Arrays.asList(grupo, grupo2));
+		despesa.setGrupos(Arrays.asList(grupo));
 		
-		receitaLiqDto.setReceitasMunicipio(Arrays.asList(receita));
-		receitaLiqDto.setDespesasMunicipio(Arrays.asList(despesa));
+		receitaLiqVinculadoDto.setDespesasMunicipio(despesa);
+		receitaLiqVinculadoDto.setReceitasMunicipio(receita);
+
+		receitaLiqNvinvuladoDto.setDespesasMunicipio(despesa);
+		receitaLiqNvinvuladoDto.setReceitasMunicipio(receita);
 		
-		dto.setReceitasLiqInicial(Arrays.asList(receitaLiqDto));
-		dto.setReceitasLiqFinal(Arrays.asList(receitaLiqDto));
+		dto.setReceitasLiqFinalNvinculada(receitaLiqNvinvuladoDto);
+		dto.setReceitasLiqInicialVinculada(receitaLiqVinculadoDto);
+	
 		
-		dto2.setReceitasLiqInicial(Arrays.asList(receitaLiqDto));
-		dto2.setReceitasLiqFinal(Arrays.asList(receitaLiqDto));
-		
-		dto3.setReceitasLiqInicial(Arrays.asList(receitaLiqDto));
-		dto3.setReceitasLiqFinal(Arrays.asList(receitaLiqDto));
-		
-		dto4.setReceitasLiqInicial(Arrays.asList(receitaLiqDto));
-		dto4.setReceitasLiqFinal(Arrays.asList(receitaLiqDto));
-		
-		return Arrays.asList(dto, dto2, dto3);
+		return Arrays.asList(dto);
 	}
 	
 
