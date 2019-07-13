@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2019-07-12T18:12:24 -->
+<!-- 2019-07-13T15:34:28 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="fluxo-caixa-detalhado-gerencial" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="BlankPage" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="98d82a10-88a4-45d9-97ca-88d2a86d2bae">
 	<property name="ireport.zoom" value="1.4641000000000006"/>
 	<property name="ireport.x" value="186"/>
@@ -96,6 +96,17 @@
 	</style>
 	<parameter name="mesInicio" class="java.lang.String"/>
 	<parameter name="mesFim" class="java.lang.String"/>
+	<parameter name="tipoRel" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
+	<parameter name="recurso" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
+	<parameter name="tipoNatureza" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
+	<parameter name="tipoProjecao" class="java.lang.String"/>
+	<parameter name="apresentacaoGrupo" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -107,59 +118,151 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="90" splitType="Stretch">
+		<band height="155" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<staticText>
-				<reportElement x="34" y="15" width="486" height="15" uuid="7c8fa1a0-45d0-4068-97d1-424030632bf2">
+				<reportElement key="keyCabecalho2" x="34" y="15" width="486" height="15" uuid="7c8fa1a0-45d0-4068-97d1-424030632bf2">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="10" isBold="true"/>
+					<font fontName="SansSerif" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Secretaria Municipal de Finanças, Tecnologia da Informação e Controle Interno - SEMEF]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="34" y="30" width="150" height="15" uuid="a63a3fe2-9ee6-4ce4-b95d-9fa73191067c">
+				<reportElement key="keyCabecalho3" x="34" y="30" width="150" height="15" uuid="a63a3fe2-9ee6-4ce4-b95d-9fa73191067c">
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Arial" size="10" isBold="true"/>
+					<font fontName="SansSerif" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Sistema Fluxo de Caixa]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="34" y="0" width="246" height="14" uuid="dc962e9f-8b78-4531-84cf-8543d3102c41">
+				<reportElement key="keyCabecalho" x="34" y="0" width="246" height="14" uuid="dc962e9f-8b78-4531-84cf-8543d3102c41">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="9" isBold="true"/>
+					<font fontName="SansSerif" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[PREFEITURA MUNICIPAL DE MANAUS]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="576" y="50" width="44" height="15" uuid="90db452a-fb11-40ad-a425-e69df33b550a"/>
+			<textField>
+				<reportElement x="87" y="67" width="178" height="12" uuid="0a72cb6e-0d83-40a3-bdb1-11241e72a46b">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
 				<textElement>
-					<font isBold="true"/>
+					<font size="9"/>
 				</textElement>
-				<text><![CDATA[Período:]]></text>
+				<textFieldExpression><![CDATA[$P{mesInicio} +" até  "+ $P{mesFim}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="34" y="55" width="78" height="12" uuid="3c7fec5e-8c85-4ff2-b6ab-3c180babfbc4">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Tipo de Relatório:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="34" y="67" width="54" height="12" uuid="229726d6-147c-45e3-89d3-f6d277872ae0"/>
+				<textElement>
+					<font size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Período de:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="34" y="79" width="44" height="12" uuid="a8380713-5a5f-43d5-a09a-e02581f1414b"/>
+				<textElement>
+					<font size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Recurso:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="34" y="91" width="78" height="12" uuid="528fcaa6-1191-471f-a003-f019b202b539">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Tipo de Natureza:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="34" y="103" width="78" height="12" uuid="6200f9bc-6bee-4afe-ae29-741e0fd0e800">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Tipo de Projeção:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="34" y="115" width="110" height="12" uuid="4d3ef5c1-f8be-4ea2-8ed7-d26ac7fadf77">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Apresentação por Grupos:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="keyTitulo" x="402" y="131" width="233" height="15" uuid="d6dd6496-7fd0-4e99-996e-7fa412e723b4">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Relatório Disponibilidade de Caixa - Gerencial]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="620" y="50" width="178" height="15" uuid="0a72cb6e-0d83-40a3-bdb1-11241e72a46b">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textFieldExpression><![CDATA[$P{mesInicio} +" a "+ $P{mesFim}]]></textFieldExpression>
+				<reportElement x="111" y="55" width="178" height="12" uuid="ab0e436a-f03d-41e9-9bb0-dcffef977d30"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tipoRel}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="77" y="79" width="178" height="12" uuid="d1c8e9c3-1141-424c-962a-95363bc74319"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{recurso}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="111" y="91" width="178" height="12" uuid="df014873-9ec5-465f-95a5-3afe19f47ef0"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tipoNatureza}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="111" y="103" width="178" height="12" uuid="6f30c8a6-75c1-4091-9b4c-39669e51a11c"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tipoProjecao}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="143" y="115" width="154" height="12" uuid="7c654cb4-286f-40c4-bdb9-08ba14fa7536"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{apresentacaoGrupo}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="435">
-			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-		</band>
+		<band height="375"/>
 	</pageHeader>
 	<pageFooter>
-		<band height="29" splitType="Stretch">
+		<band height="24" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<line>
 				<reportElement x="0" y="2" width="802" height="1" uuid="134164dc-d97e-4c8c-a554-416735a88c38">
