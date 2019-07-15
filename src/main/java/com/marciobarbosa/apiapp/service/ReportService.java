@@ -266,125 +266,11 @@ public class ReportService {
 		int yUltimoAdd = Y_INIT_DETAIL;
 		
 		for(ColunmAgrupamentoRelDTO dados : dto) {
-			
-			//Receita Liquida inicial - não Vinculada
-			ReceitaLiquidaRelDTO dadosReceitaLiq = dados.getReceitasLiqFinalNvinculada();
-			this.pageHeader.addElement(montarColunaDescricao(X_INIT_DETAIL, yUltimoAdd, dadosReceitaLiq.getNome()));
-			yUltimoAdd += 15;
-			
-			//Receitas Municipio	
-			ReceitaDespesaMuniRelDTO recMunicipio = dadosReceitaLiq.getReceitasMunicipio();
-					
-			this.pageHeader.addElement(montarRetangulo(yUltimoAdd, X_INIT_DETAIL, colorBackGround));
-			this.pageHeader.addElement(montarColunaDescricao(X_INIT_DETAIL, yUltimoAdd, recMunicipio.getNome()));
-			yUltimoAdd += 15;
-					
-			for(GrupoRelDTO grupo : recMunicipio.getGrupos()) {
-						
-				JRDesignStaticText elementoGrupo = montarColunaDescricaoGrupo(X_INIT_DETAIL, yUltimoAdd, grupo.getNome(), LEFT_IDENT_GRUPO);
-				elementoGrupo.setBackcolor(colorWhite);
-				this.pageHeader.addElement(elementoGrupo);
-				yUltimoAdd += 15;
-						
-				for(SubGrupoRelDTO subGrupo : grupo.getSubgrupos()) {
-							
-					JRDesignStaticText elementoSub = montarColunaDescricaoGrupo(X_INIT_DETAIL, yUltimoAdd, subGrupo.getNome(),LEFT_IDENT_SUB_GRUPO);
-					elementoSub.setBackcolor(colorWhite);
-					elementoSub.setFontSize(6.0f);
-					this.pageHeader.addElement(elementoSub);
-					yUltimoAdd += 15;
-							
-				}
-			}
-			
-			//Despesas municipio
-			ReceitaDespesaMuniRelDTO despMunicipio = dadosReceitaLiq.getDespesasMunicipio();
-			this.pageHeader.addElement(montarRetangulo(yUltimoAdd, X_INIT_DETAIL, colorBackGround));
-			this.pageHeader.addElement(montarColunaDescricao(X_INIT_DETAIL, yUltimoAdd, despMunicipio.getNome()));
-			yUltimoAdd += 15;
-			
-			
-			for(GrupoRelDTO grupo : despMunicipio.getGrupos()) {
-						
-				JRDesignStaticText elementoGrupo = montarColunaDescricaoGrupo(X_INIT_DETAIL, yUltimoAdd, grupo.getNome(), LEFT_IDENT_GRUPO);
-				elementoGrupo.setBackcolor(colorWhite);
-				this.pageHeader.addElement(elementoGrupo);
-				yUltimoAdd += 15;
-						
-				for(SubGrupoRelDTO subGrupo : grupo.getSubgrupos()) {
-							
-					JRDesignStaticText elementoSub = montarColunaDescricaoGrupo(X_INIT_DETAIL, yUltimoAdd, subGrupo.getNome(), LEFT_IDENT_SUB_GRUPO);
-					elementoSub.setBackcolor(colorWhite);
-					elementoSub.setFontSize(6.0f);
-					this.pageHeader.addElement(elementoSub);
-					yUltimoAdd += 15;
-							
-				}
-			}
-			this.pageHeader.addElement(montarRetangulo(yUltimoAdd, X_INIT_DETAIL, colorYellow));
-			this.pageHeader.addElement(montarColunaDescricao(X_INIT_DETAIL, yUltimoAdd, "SALDO LÍQUIDO FINAL: NÃO VINCULADO"));
-			yUltimoAdd += 15;
-			
-			
-			
-			//Receita Liquida inicial - Vinculada
-			ReceitaLiquidaRelDTO dadosReceitaVinculada = dados.getReceitasLiqInicialVinculada();
-			this.pageHeader.addElement(montarRetangulo(yUltimoAdd, X_INIT_DETAIL, colorBackGround));
-			this.pageHeader.addElement(montarColunaDescricao(X_INIT_DETAIL, yUltimoAdd, dadosReceitaVinculada.getNome()));
-			yUltimoAdd += 15;
-			
-			//Receitas municipio
-			ReceitaDespesaMuniRelDTO recMunicipioVinc = dadosReceitaVinculada.getReceitasMunicipio();
-			
-			this.pageHeader.addElement(montarRetangulo(yUltimoAdd, X_INIT_DETAIL, colorBackGround));
-			this.pageHeader.addElement(montarColunaDescricao(X_INIT_DETAIL, yUltimoAdd, recMunicipioVinc.getNome()));
-			yUltimoAdd += 15;
-					
-			for(GrupoRelDTO grupoVinc : recMunicipioVinc.getGrupos()) {
-						
-				JRDesignStaticText elementoGrupo = montarColunaDescricaoGrupo(X_INIT_DETAIL, yUltimoAdd, grupoVinc.getNome(), LEFT_IDENT_GRUPO);
-				elementoGrupo.setBackcolor(colorWhite);
-				this.pageHeader.addElement(elementoGrupo);
-				yUltimoAdd += 15;
-						
-				for(SubGrupoRelDTO subGrupoVinc : grupoVinc.getSubgrupos()) {
-							
-					JRDesignStaticText elementoSub = montarColunaDescricaoGrupo(X_INIT_DETAIL, yUltimoAdd, subGrupoVinc.getNome(), LEFT_IDENT_SUB_GRUPO);
-					elementoSub.setBackcolor(colorWhite);
-					elementoSub.setFontSize(6.0f);
-					this.pageHeader.addElement(elementoSub);
-					yUltimoAdd += 15;
-							
-				}
-			}
-			
-			//Despesas municipio
-			ReceitaDespesaMuniRelDTO despMunicipioVinc = dadosReceitaVinculada.getDespesasMunicipio();
-			this.pageHeader.addElement(montarRetangulo(yUltimoAdd, X_INIT_DETAIL, colorBackGround));
-			this.pageHeader.addElement(montarColunaDescricao(X_INIT_DETAIL, yUltimoAdd, despMunicipioVinc.getNome()));
-			yUltimoAdd += 15;
-			
-			for(GrupoRelDTO grupoVinc : despMunicipioVinc.getGrupos()) {
-				
-				JRDesignStaticText elementoGrupo = montarColunaDescricaoGrupo(X_INIT_DETAIL, yUltimoAdd, grupoVinc.getNome(), LEFT_IDENT_GRUPO);
-				elementoGrupo.setBackcolor(colorWhite);
-				this.pageHeader.addElement(elementoGrupo);
-				yUltimoAdd += 15;
-						
-				for(SubGrupoRelDTO subGrupoVinc : grupoVinc.getSubgrupos()) {
-							
-					JRDesignStaticText elementoSub = montarColunaDescricaoGrupo(X_INIT_DETAIL, yUltimoAdd, subGrupoVinc.getNome(), LEFT_IDENT_SUB_GRUPO);
-					elementoSub.setBackcolor(colorWhite);
-					this.pageHeader.addElement(elementoSub);
-					yUltimoAdd += 15;
-							
-				}
-			}
-			this.pageHeader.addElement(montarRetangulo(yUltimoAdd, X_INIT_DETAIL, colorYellow));
-			this.pageHeader.addElement(montarColunaDescricao(X_INIT_DETAIL, yUltimoAdd, "SALDO LÍQUIDO FINAL: VINCULADO"));
-			yUltimoAdd += 15;
-			
+			yUltimoAdd = montarReceitaLiqNvinculado(yUltimoAdd, dados);
+			yUltimoAdd = montarReceitaLiqVinculado(yUltimoAdd, dados);
 		}
+		
+		
 		this.pageHeader.addElement(montarRetangulo(yUltimoAdd, X_INIT_DETAIL, colorBackGround));
 		JRDesignStaticText elemntTotalReceita = montarColunaDescricao(X_INIT_DETAIL, yUltimoAdd, "TOTAL DAS RECEITAS (NÃO VINCULADO/VINCULADO)");
 		elemntTotalReceita.setFontSize(6.0f);
@@ -394,11 +280,131 @@ public class ReportService {
 		JRDesignStaticText elemntTotalDespesa = montarColunaDescricao(X_INIT_DETAIL, yUltimoAdd, "TOTAL DAS DESPESAS (NÃO VINCULADO/VINCULADO)");
 		elemntTotalDespesa.setFontSize(6.0f);
 		this.pageHeader.addElement(elemntTotalDespesa);
-		yUltimoAdd += 15;
 		
 		
 		this.relatorioPrincipal.setPageHeader(this.pageHeader);
 		
+	}
+
+	private int montarReceitaLiqVinculado(int yUltimoAdd, ColunmAgrupamentoRelDTO dados) {
+		//Receita Liquida inicial - Vinculada
+		ReceitaLiquidaRelDTO dadosReceitaVinculada = dados.getReceitasLiqInicialVinculada();
+		this.pageHeader.addElement(montarRetangulo(yUltimoAdd, X_INIT_DETAIL, colorBackGround));
+		this.pageHeader.addElement(montarColunaDescricao(X_INIT_DETAIL, yUltimoAdd, dadosReceitaVinculada.getNome()));
+		yUltimoAdd += 15;
+		
+		//Receitas municipio
+		ReceitaDespesaMuniRelDTO recMunicipioVinc = dadosReceitaVinculada.getReceitasMunicipio();
+		
+		this.pageHeader.addElement(montarRetangulo(yUltimoAdd, X_INIT_DETAIL, colorBackGround));
+		this.pageHeader.addElement(montarColunaDescricao(X_INIT_DETAIL, yUltimoAdd, recMunicipioVinc.getNome()));
+		yUltimoAdd += 15;
+				
+		for(GrupoRelDTO grupoVinc : recMunicipioVinc.getGrupos()) {
+					
+			JRDesignStaticText elementoGrupo = montarColunaDescricaoGrupo(X_INIT_DETAIL, yUltimoAdd, grupoVinc.getNome(), LEFT_IDENT_GRUPO);
+			elementoGrupo.setBackcolor(colorWhite);
+			this.pageHeader.addElement(elementoGrupo);
+			yUltimoAdd += 15;
+					
+			for(SubGrupoRelDTO subGrupoVinc : grupoVinc.getSubgrupos()) {
+						
+				JRDesignStaticText elementoSub = montarColunaDescricaoGrupo(X_INIT_DETAIL, yUltimoAdd, subGrupoVinc.getNome(), LEFT_IDENT_SUB_GRUPO);
+				elementoSub.setBackcolor(colorWhite);
+				elementoSub.setFontSize(6.0f);
+				this.pageHeader.addElement(elementoSub);
+				yUltimoAdd += 15;
+						
+			}
+		}
+		
+		//Despesas municipio
+		ReceitaDespesaMuniRelDTO despMunicipioVinc = dadosReceitaVinculada.getDespesasMunicipio();
+		this.pageHeader.addElement(montarRetangulo(yUltimoAdd, X_INIT_DETAIL, colorBackGround));
+		this.pageHeader.addElement(montarColunaDescricao(X_INIT_DETAIL, yUltimoAdd, despMunicipioVinc.getNome()));
+		yUltimoAdd += 15;
+		
+		for(GrupoRelDTO grupoVinc : despMunicipioVinc.getGrupos()) {
+			
+			JRDesignStaticText elementoGrupo = montarColunaDescricaoGrupo(X_INIT_DETAIL, yUltimoAdd, grupoVinc.getNome(), LEFT_IDENT_GRUPO);
+			elementoGrupo.setBackcolor(colorWhite);
+			this.pageHeader.addElement(elementoGrupo);
+			yUltimoAdd += 15;
+					
+			for(SubGrupoRelDTO subGrupoVinc : grupoVinc.getSubgrupos()) {
+						
+				JRDesignStaticText elementoSub = montarColunaDescricaoGrupo(X_INIT_DETAIL, yUltimoAdd, subGrupoVinc.getNome(), LEFT_IDENT_SUB_GRUPO);
+				elementoSub.setBackcolor(colorWhite);
+				this.pageHeader.addElement(elementoSub);
+				yUltimoAdd += 15;
+						
+			}
+		}
+		this.pageHeader.addElement(montarRetangulo(yUltimoAdd, X_INIT_DETAIL, colorYellow));
+		this.pageHeader.addElement(montarColunaDescricao(X_INIT_DETAIL, yUltimoAdd, "SALDO LÍQUIDO FINAL: VINCULADO"));
+		yUltimoAdd += 15;
+		return yUltimoAdd;
+	}
+
+	private int montarReceitaLiqNvinculado(int yUltimoAdd, ColunmAgrupamentoRelDTO dados) {
+		//Receita Liquida inicial - não Vinculada
+		ReceitaLiquidaRelDTO dadosReceitaLiq = dados.getReceitasLiqFinalNvinculada();
+		this.pageHeader.addElement(montarColunaDescricao(X_INIT_DETAIL, yUltimoAdd, dadosReceitaLiq.getNome()));
+		yUltimoAdd += 15;
+		
+		//Receitas Municipio	
+		ReceitaDespesaMuniRelDTO recMunicipio = dadosReceitaLiq.getReceitasMunicipio();
+				
+		this.pageHeader.addElement(montarRetangulo(yUltimoAdd, X_INIT_DETAIL, colorBackGround));
+		this.pageHeader.addElement(montarColunaDescricao(X_INIT_DETAIL, yUltimoAdd, recMunicipio.getNome()));
+		yUltimoAdd += 15;
+				
+		for(GrupoRelDTO grupo : recMunicipio.getGrupos()) {
+					
+			JRDesignStaticText elementoGrupo = montarColunaDescricaoGrupo(X_INIT_DETAIL, yUltimoAdd, grupo.getNome(), LEFT_IDENT_GRUPO);
+			elementoGrupo.setBackcolor(colorWhite);
+			this.pageHeader.addElement(elementoGrupo);
+			yUltimoAdd += 15;
+					
+			for(SubGrupoRelDTO subGrupo : grupo.getSubgrupos()) {
+						
+				JRDesignStaticText elementoSub = montarColunaDescricaoGrupo(X_INIT_DETAIL, yUltimoAdd, subGrupo.getNome(),LEFT_IDENT_SUB_GRUPO);
+				elementoSub.setBackcolor(colorWhite);
+				elementoSub.setFontSize(6.0f);
+				this.pageHeader.addElement(elementoSub);
+				yUltimoAdd += 15;
+						
+			}
+		}
+		
+		//Despesas municipio
+		ReceitaDespesaMuniRelDTO despMunicipio = dadosReceitaLiq.getDespesasMunicipio();
+		this.pageHeader.addElement(montarRetangulo(yUltimoAdd, X_INIT_DETAIL, colorBackGround));
+		this.pageHeader.addElement(montarColunaDescricao(X_INIT_DETAIL, yUltimoAdd, despMunicipio.getNome()));
+		yUltimoAdd += 15;
+		
+		
+		for(GrupoRelDTO grupo : despMunicipio.getGrupos()) {
+					
+			JRDesignStaticText elementoGrupo = montarColunaDescricaoGrupo(X_INIT_DETAIL, yUltimoAdd, grupo.getNome(), LEFT_IDENT_GRUPO);
+			elementoGrupo.setBackcolor(colorWhite);
+			this.pageHeader.addElement(elementoGrupo);
+			yUltimoAdd += 15;
+					
+			for(SubGrupoRelDTO subGrupo : grupo.getSubgrupos()) {
+						
+				JRDesignStaticText elementoSub = montarColunaDescricaoGrupo(X_INIT_DETAIL, yUltimoAdd, subGrupo.getNome(), LEFT_IDENT_SUB_GRUPO);
+				elementoSub.setBackcolor(colorWhite);
+				elementoSub.setFontSize(6.0f);
+				this.pageHeader.addElement(elementoSub);
+				yUltimoAdd += 15;
+						
+			}
+		}
+		this.pageHeader.addElement(montarRetangulo(yUltimoAdd, X_INIT_DETAIL, colorYellow));
+		this.pageHeader.addElement(montarColunaDescricao(X_INIT_DETAIL, yUltimoAdd, "SALDO LÍQUIDO FINAL: NÃO VINCULADO"));
+		yUltimoAdd += 15;
+		return yUltimoAdd;
 	} 
 	
 	private JRDesignRectangle montarRetangulo(int y, int x, Color color) {
