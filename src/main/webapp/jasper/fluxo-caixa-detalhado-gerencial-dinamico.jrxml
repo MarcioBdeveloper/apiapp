@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2019-07-13T15:53:14 -->
+<!-- 2019-07-22T12:47:56 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="fluxo-caixa-detalhado-gerencial" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="BlankPage" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="98d82a10-88a4-45d9-97ca-88d2a86d2bae">
 	<property name="ireport.zoom" value="1.4641000000000006"/>
 	<property name="ireport.x" value="186"/>
@@ -256,14 +256,12 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{apresentacaoGrupo}]]></textFieldExpression>
 			</textField>
-			<image>
-				<reportElement x="0" y="0" width="50" height="50" uuid="9f5d0ba5-f117-413f-89df-74cef81abafd"/>
-				<imageExpression><![CDATA[System.getProperty("file.separator") + "img" + System.getProperty("file.separator") + "brasao.gif"]]></imageExpression>
-			</image>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="375"/>
+		<band height="375">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+		</band>
 	</pageHeader>
 	<pageFooter>
 		<band height="24" splitType="Stretch">
@@ -283,16 +281,6 @@
 				</textElement>
 				<text><![CDATA[Relatório Fluxo de Caixa Detalhado - Gerencial]]></text>
 			</staticText>
-			<textField evaluationTime="Master" pattern="" isBlankWhenNull="true">
-				<reportElement x="487" y="14" width="315" height="10" uuid="564f9abf-a8d0-4f80-aa2b-17a9ceb173d0">
-					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Arial" size="7" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Página " + $V{MASTER_CURRENT_PAGE} + " de " + $V{PAGE_NUMBER}]]></textFieldExpression>
-			</textField>
 			<textField pattern="dd/MM/yyyy HH:mm">
 				<reportElement x="1" y="14" width="183" height="10" uuid="d72e537c-0efa-4062-af73-7a57c07858a2">
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
@@ -303,6 +291,17 @@
 				</textElement>
 				<textFieldExpression><![CDATA["Data de Emissão: "+ new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm").format(new java.util.Date())]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement key="KeycontadorDePagina" x="487" y="14" width="315" height="10" uuid="beb1d6b9-eeba-40cb-bdb3-9185f73d3d62">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
 		</band>
 	</pageFooter>
 	<summary>

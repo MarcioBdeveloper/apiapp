@@ -1,16 +1,12 @@
 package com.marciobarbosa.apiapp.service;
 
 import java.awt.Color;
-import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,19 +19,17 @@ import com.marciobarbosa.apiapp.dto.SubGrupoRelDTO;
 import com.marciobarbosa.apiapp.util.ContextualizedJasperFileResolver;
 import com.marciobarbosa.apiapp.util.JRElementConfig;
 import com.marciobarbosa.apiapp.util.JasperReportBuilder;
+import com.marciobarbosa.apiapp.util.JasperReportBuilderSnapshot;
 
-import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JRExpression;
 import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.design.JRDesignBand;
 import net.sf.jasperreports.engine.design.JRDesignRectangle;
 import net.sf.jasperreports.engine.design.JRDesignStaticText;
+import net.sf.jasperreports.engine.design.JRDesignTextField;
 import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.type.HorizontalTextAlignEnum;
 import net.sf.jasperreports.engine.type.SplitTypeEnum;
 import net.sf.jasperreports.engine.type.VerticalTextAlignEnum;
@@ -50,7 +44,7 @@ import net.sf.jasperreports.engine.xml.JRXmlLoader;
  * */
 
 @Service
-public class ReportService {
+public class ReportService2 {
 	
 	private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	
@@ -63,7 +57,6 @@ public class ReportService {
     
 	private JasperDesign relatorioPrincipal;
 	private JRDesignBand pageHeader;
-	private JRDesignBand pageHeaderConfiguracaoBase;
 	private List<JRDesignBand> details;
 	private static final Color colorBackGround = new Color(199,199,199);
 	private static final Color colorWhite = new Color(255,255,255);
@@ -99,7 +92,10 @@ public class ReportService {
 	private String tipo;
 	private List<ColunmAgrupamentoRelDTO> dadosRel;
 	private int yUltimoAdd;
-	private List<JasperPrint> jasperPrints;
+	
+	private int totalDePaginas;
+	
+	private int paginaAtual;
     
 	@Autowired
     private ContextualizedJasperFileResolver fileResolver;
@@ -108,36 +104,37 @@ public class ReportService {
     private JasperReportBuilder jasperBuilder;
 	
 	public void montarRelatorio() throws JRException {
-		
-		Map<String, JasperReport> subreports = new HashMap<>();
+
     	this.dadosRel = montarDados();
-    	 ByteArrayOutputStream pdfOutputStream = new ByteArrayOutputStream();
+
 		
-    	
     	try {
-    		JRPdfExporter pdfExporter = new JRPdfExporter ();
-    		pdfExporter.setParameter (JRExporterParameter.JASPER_PRINT_LIST, montarReport(this.dadosRel, "TODOS"));
-    		pdfExporter.setParameter (JRExporterParameter.OUTPUT_STREAM, new FileOutputStream(this.relatorioPrincipal.getName()+".pdf"));
-    		pdfExporter.exportReport();
-    		
-    	
+    		JasperReportBuilderSnapshot resultado = montarReport(this.dadosRel, "TODOS");
+    		//resultado.viewPdf();
+    		resultado.downloadXls();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	private List<JasperPrint> montarReport(List<ColunmAgrupamentoRelDTO> dados, String tipo) throws JRException {
+	private JasperReportBuilderSnapshot montarReport(List<ColunmAgrupamentoRelDTO> dados, String tipo) throws JRException {
 		
 		this.tipo = tipo;
 		int qtdCol = dados.size();
 		
 		this.details = new ArrayList<>();
-		this.jasperPrints = new ArrayList<>();
 		
 		this.relatorioPrincipal = JRXmlLoader.load(fileResolver.resolveFile(TEMPLETE));
     	this.pageHeader = (JRDesignBand) this.relatorioPrincipal.getPageHeader();
-    	this.pageHeaderConfiguracaoBase = (JRDesignBand) this.relatorioPrincipal.getPageHeader();
+
     	JRDesignBand titulo = (JRDesignBand) this.relatorioPrincipal.getTitle();
+    	
+    	JRDesignBand footer = (JRDesignBand) this.relatorioPrincipal.getPageFooter();
+    	
+    	JRDesignStaticText contaPaginaAtual = (JRDesignStaticText) footer.getElementByKey("KeycontadorDePagina");
+  
+    	
+    	
     	JRDesignStaticText tituloRel = (JRDesignStaticText) titulo.getElementByKey("keyTitulo");
     	tituloRel.setBold(true);
     	tituloRel.setFontSize(10.0f);
@@ -170,28 +167,50 @@ public class ReportService {
     	
     	columnCard();
     	columnCardResumo();
-    	List<JRDesignBand> bandas = montarDetail(dados);
-    	Map<String, Object> paramMap = new HashMap<String, Object>();
-    	paramMap.put("recurso", "teste");
-    	JasperReport report = JasperCompileManager.compileReport(this.relatorioPrincipal);
-    	JasperPrint reportPrint = JasperFillManager.fillReport(report, paramMap, new JREmptyDataSource());
-    	jasperPrints.add(reportPrint);
+    	montarDetail(dados);
+
+    	List<ColunmAgrupamentoRelDTO> list = montarDados();
+    	this.totalDePaginas = 1+this.details.size();
+    	this.paginaAtual = 1;
+
+    	contaPaginaAtual.setFontSize(7.0f);
+    	contaPaginaAtual.setText("Página "+this.paginaAtual+" de "+this.totalDePaginas);
+    	footer.addElement(contaPaginaAtual);
     	
-    	for(JRDesignBand banda : bandas) {
+    	this.relatorioPrincipal.setPageFooter(footer);
+    	JasperReport report = JasperCompileManager.compileReport(this.relatorioPrincipal);
+    	JasperReportBuilderSnapshot resultado  = jasperBuilder.forReport(report)    				
+    			.withParameter("mesInicio", LocalDate.now().format(format))
+    			.withParameter("mesFim", LocalDate.now().plusDays(2).format(format))
+    			.withParameter("tipoRel", "Tipo Rel Teste")
+    			.withParameter("recurso", "Recurso Rel Teste")
+    			.withParameter("tipoNatureza", "Tipo Natureza Rel Teste")
+    			.withParameter("tipoProjecao", "Tipo Projeção Rel Teste")
+    			.withParameter("apresentacaoGrupo", "Apresentação Rel Teste").fill(list).snapshot();
+
+    	this.relatorioPrincipal.setTitle(null);
+    	for(JRDesignBand banda : this.details) {
+    		this.paginaAtual++;
     		JasperDesign pagina = this.relatorioPrincipal; 
     		pagina.setPageHeader(banda);
-    		jasperPrints.add(JasperFillManager.fillReport(JasperCompileManager.compileReport(pagina), paramMap, new JREmptyDataSource()));
+        	contaPaginaAtual.setText("Página "+this.paginaAtual+" de "+this.totalDePaginas);
+        	footer.addElement(contaPaginaAtual);
+        	pagina.setPageFooter(footer);
+    		JasperReport reportAUX = JasperCompileManager.compileReport(pagina);
+    		JasperReportBuilderSnapshot aux = jasperBuilder.forReport(reportAUX).fill(list).snapshot();
+    		resultado.concat(aux);
+    	
     	}
-    	return this.jasperPrints;
+    	return resultado;
 	}
 	
 	private void verificaTamnhoDaPagina(int ultimoX, int ultimoY) {
 		if(ultimoX>=WIDTH_DETAIL || ultimoY>=(HEIGHT_MAX_DETAIL-15)) {
-			this.details.add(this.pageHeader);
 			this.pageHeader = new JRDesignBand();
 			this.pageHeader.setHeight(375);
 			this.pageHeader.setSplitType(SplitTypeEnum.PREVENT);
 			this.yUltimoAdd = Y_INIT_DETAIL;
+			this.details.add(this.pageHeader);
 		}
 	}
 	
@@ -292,7 +311,7 @@ public class ReportService {
 	
 	
 	//monta e configura detail Receita Liquida
-	private List<JRDesignBand> montarDetail(List<ColunmAgrupamentoRelDTO> dto) {
+	private void montarDetail(List<ColunmAgrupamentoRelDTO> dto) {
 		this.pageHeader.addElement(montarRetangulo(Y_INIT_DETAIL, X_INIT_DETAIL, colorBackGround));
 		this.yUltimoAdd = Y_INIT_DETAIL;
 		
@@ -313,10 +332,6 @@ public class ReportService {
 		this.pageHeader.addElement(elemntTotalDespesa);
 		
 		this.pageHeader.setSplitType(SplitTypeEnum.PREVENT);
-		
-		
-		this.details.add(this.pageHeader);
-		return this.details;
 		
 	}
 	

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.marciobarbosa.apiapp.dto.DenunciaDTO;
 import com.marciobarbosa.apiapp.service.DenunciaService;
 import com.marciobarbosa.apiapp.service.ReportService;
+import com.marciobarbosa.apiapp.service.ReportService2;
 
 import net.sf.jasperreports.engine.JRException;
 
@@ -34,6 +35,8 @@ public class DenunciaController {
 	private DenunciaService service;
 	@Autowired
 	private ReportService reportService;
+	@Autowired
+	private ReportService2 reportService2;
 	
 	
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -62,6 +65,15 @@ public class DenunciaController {
 	public void realtorioJasper(){
 		try {
 			this.reportService.montarRelatorio();
+		} catch (JRException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@RequestMapping(value = "/relatorio2", method = RequestMethod.GET)
+	public void realtorioJasper2(){
+		try {
+			this.reportService2.montarRelatorio();
 		} catch (JRException e) {
 			e.printStackTrace();
 		}
