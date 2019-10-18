@@ -9,5 +9,4 @@
 
 > 2 - execute com 'mvn spring-boot:run' <br>
 
-> 3 - Após execução a documentação da API pode ser acessada em http://localhost:8080/swagger-ui.html com todos os endpoints <br>
-> disponiveis 
+> 3 - Após execução a documentação da API pode ser acessada em http://localhost:8080/swagger-ui.html com todos os endpoints disponiveis 
